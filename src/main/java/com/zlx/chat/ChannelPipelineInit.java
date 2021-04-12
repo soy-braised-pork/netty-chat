@@ -1,15 +1,21 @@
 package com.zlx.chat;
 
 
+import com.zlx.chat.handler.HeartbeatHandler;
+import com.zlx.chat.handler.WebSocketHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
 import io.netty.handler.timeout.IdleStateHandler;
-import websocket.handler.HeartbeatHandler;
-import websocket.handler.WebSocketHandler;
 
+
+/**
+ * 服务编排层
+ * ChannelPipeline
+ * Channelhandler
+ */
 
 
 public class ChannelPipelineInit extends ChannelInitializer<SocketChannel> {

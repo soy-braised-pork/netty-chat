@@ -1,9 +1,9 @@
 package com.zlx.chat.v2;
 
 public class Message {
-    private String id;
-    private String content;
-    private String messageType;
+    private String id;   //id
+    private String content;   //文本
+    private String messageType;  //？？
     private long timestamp;
 
     public Message(String id,String content,long timestamp,String messageType){

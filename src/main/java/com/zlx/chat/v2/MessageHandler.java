@@ -15,20 +15,32 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
+    //管理Channel组
     public static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    //ConcurrentHashMap   channelId的缓存
     public static ConcurrentHashMap<String, ChannelId> channelIdMap = new ConcurrentHashMap<>();
+    //                    name缓存
     public static ConcurrentHashMap<String, String> nameMap = new ConcurrentHashMap<>();
+    //原子类  在线人数   int并发不安全
     public static AtomicInteger online = new AtomicInteger();
 
 
+    /**
+     *
+     * @param channelHandlerContext  上下文
+     * @param webSocketFrame  传输的数据
+     * @throws Exception
+     */
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame webSocketFrame) throws Exception {
+        //解析Gson格式，变成类，由前端传入
         Message message = new Gson().fromJson(webSocketFrame.text(), Message.class);
         if (message==null){
             sendMessageByChannel(channelHandlerContext.channel(),new Message(channelHandlerContext.channel().id().asShortText(),"消息错误",System.currentTimeMillis(), MessageType.CHAT_MSG.name()));
             return;
         }else {
             //改名字
+            //前端传入
             if (MessageType.CHANGE_NAME.name().equals(message.getMessageType())){
                 nameMap.put(channelHandlerContext.channel().id().asShortText(), message.getContent());
                 sendMessageForAll(new Message("",channelHandlerContext.channel().id().asShortText()+"_"+message.getContent(),System.currentTimeMillis(),MessageType.CHANGE_NAME.name()));
@@ -51,6 +63,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFra
         channelIdMap.put(ctx.channel().id().asShortText(),ctx.channel().id());
         online.set(channelGroup.size());
         sendMessageForAll(new Message("",ctx.channel().id().asShortText(),System.currentTimeMillis(),MessageType.USER_ADD.name()));
+        //远程地址+    +文本
         System.out.println(ctx.channel().remoteAddress()+"上线！"+"--->"+ctx.channel().id().asShortText());
     }
 
@@ -63,11 +76,15 @@ public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFra
         System.out.println(ctx.channel().remoteAddress()+"下线！");
     }
 
+    //捕获异常
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx,Throwable cause) throws Exception{
         cause.printStackTrace();
     }
 
+    /*
+    传给前端，对象变成Gson
+     */
     private void sendMessageByChannel(Channel channel,Message message){
         channel.writeAndFlush(new TextWebSocketFrame(new Gson().toJson(message)));
     }

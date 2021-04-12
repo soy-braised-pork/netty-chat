@@ -24,10 +24,12 @@ public class Server {
         EventLoopGroup boss=new NioEventLoopGroup(1);
         NioEventLoopGroup worker=new NioEventLoopGroup();
         try {
+            //服务端
             ServerBootstrap b=new ServerBootstrap();
             b.group(boss,worker)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new PiplineManager());
+            //处理连接
             Channel ch=b.bind(port).sync().channel();
             ch.closeFuture().sync();
         }finally {
