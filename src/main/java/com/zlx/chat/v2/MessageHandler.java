@@ -22,7 +22,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFra
 
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame webSocketFrame) throws Exception {
         Message message = new Gson().fromJson(webSocketFrame.text(), Message.class);
         if (message==null){
             sendMessageByChannel(channelHandlerContext.channel(),new Message(channelHandlerContext.channel().id().asShortText(),"消息错误",System.currentTimeMillis(), MessageType.CHAT_MSG.name()));
@@ -59,7 +59,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFra
         channelGroup.remove(ctx.channel());
         channelIdMap.remove(ctx.channel().id().asShortText());
         online.set(channelGroup.size());
-        sendMessageForAll(new Message("",ctx.channel().id().id().asShortText,System.currentTimeMillis(),MessageType.USER_LEAVE.name()));
+        sendMessageForAll(new Message("",ctx.channel().id().asShortText(),System.currentTimeMillis(),MessageType.USER_LEAVE.name()));
         System.out.println(ctx.channel().remoteAddress()+"下线！");
     }
 

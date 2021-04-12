@@ -7,7 +7,9 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
 import io.netty.handler.timeout.IdleStateHandler;
-import org.springframework.web.reactive.socket.WebSocketHandler;
+import websocket.handler.HeartbeatHandler;
+import websocket.handler.WebSocketHandler;
+
 
 
 public class ChannelPipelineInit extends ChannelInitializer<SocketChannel> {
@@ -19,6 +21,6 @@ public class ChannelPipelineInit extends ChannelInitializer<SocketChannel> {
         socketChannel.pipeline().addLast(new WebSocketServerCompressionHandler());
         socketChannel.pipeline().addLast(new WebSocketHandler());
         socketChannel.pipeline().addLast(new IdleStateHandler(2,4,20));
-        socketChannel.pipeline().addLast(new HeartbeatHandle());
+        socketChannel.pipeline().addLast(new HeartbeatHandler());
     }
 }

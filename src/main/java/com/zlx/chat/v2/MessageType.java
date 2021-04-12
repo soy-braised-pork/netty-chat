@@ -2,7 +2,7 @@ package com.zlx.chat.v2;
 
 import javafx.beans.property.adapter.JavaBeanBooleanPropertyBuilder;
 
-public class MessageType {
+public enum MessageType {
 
 
     USER_ADD,
